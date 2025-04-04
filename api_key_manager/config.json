@@ -1,0 +1,19 @@
+{
+  "app_name": "API Key Manager",
+  "organization": "APIKeyManager",
+  "window": {
+    "title": "API Key Manager",
+    "min_width": 265,
+    "min_height": 400,
+    "start_maximized": false
+  },
+  "build": {
+    "executable_name": "API Key Manager",
+    "icon_path": "resources/icons/app_icon.ico",
+    "one_file": true
+  },
+  "storage": {
+    "service_name": "APIKeyManager",
+    "index_key": "__key_index__"
+  }
+}

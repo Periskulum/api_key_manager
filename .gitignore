@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE specific files
+.idea/
+.vscode/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local configuration that might contain sensitive information
+# Uncomment if you don't want to track config.json
+# config.json
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Compiled executables
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Temp files
+*.bak
+*.swp
+*.tmp
