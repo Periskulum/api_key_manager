@@ -5,7 +5,8 @@
     "title": "API Key Manager",
     "min_width": 265,
     "min_height": 400,
-    "start_maximized": false
+    "start_maximized": false,
+    "dark_mode": true
   },
   "build": {
     "executable_name": "API Key Manager",

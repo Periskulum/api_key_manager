@@ -18,6 +18,7 @@ DEFAULT_CONFIG = {
         "min_width": 265,
         "min_height": 400,
         "start_maximized": False,
+        "dark_mode": False,
     },
     
     # Build settings

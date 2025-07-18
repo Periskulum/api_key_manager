@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         """Initialize the main window."""
         super().__init__()
         self.key_storage = KeyStorage()
+        self.dark_mode = config.get("window", "dark_mode", False)
         self.init_ui()
         self.load_keys()
         
@@ -97,6 +98,24 @@ class MainWindow(QMainWindow):
         # Button layout
         button_layout = QHBoxLayout()
         
+        # Dark mode toggle button
+        self.dark_mode_button = QPushButton()
+        self.dark_mode_button.setObjectName("dark_mode_button")
+        self.dark_mode_button.setFixedSize(32, 32)
+        self.dark_mode_button.setStyleSheet("""
+            QPushButton {
+                background: transparent;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: rgba(128, 128, 128, 0.2);
+                border-radius: 4px;
+            }
+        """)
+        self.dark_mode_button.clicked.connect(self.toggle_dark_mode)
+        self.update_dark_mode_icon()
+        button_layout.addWidget(self.dark_mode_button)
+        
         # Add key button
         add_button = QPushButton("Add New Key")
         add_button.clicked.connect(self.add_key)
@@ -116,6 +135,94 @@ class MainWindow(QMainWindow):
         
         # Status bar
         self.statusBar().showMessage("Ready")
+    
+    def toggle_dark_mode(self):
+        """Toggle between light and dark mode."""
+        self.dark_mode = not self.dark_mode
+        config.set("window", "dark_mode", self.dark_mode)
+        config.save_config()
+        self.update_dark_mode_icon()
+        
+    def update_dark_mode_icon(self):
+        """Update the window and button icons based on dark mode state."""
+        # Update application style
+        if self.dark_mode:
+            self.setStyleSheet("""
+                QMainWindow {
+                    background-color: #2b2b2b;
+                }
+                QListWidget {
+                    background-color: #3b3b3b;
+                    color: #ffffff;
+                    border: 1px solid #555555;
+                }
+                QLineEdit {
+                    background-color: #3b3b3b;
+                    color: #ffffff;
+                    border: 1px solid #555555;
+                    padding: 5px;
+                }
+                QPushButton {
+                    background-color: #444444;
+                    color: #ffffff;
+                    border: 1px solid #555555;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                }
+                QPushButton:hover {
+                    background-color: #555555;
+                }
+                QPushButton#dark_mode_button {
+                    background: transparent;
+                    border: none;
+                }
+                QPushButton#dark_mode_button:hover {
+                    background-color: rgba(128, 128, 128, 0.2);
+                }
+                QStatusBar {
+                    background-color: #2b2b2b;
+                    color: #ffffff;
+                }
+            """)
+        else:
+            self.setStyleSheet("")
+
+        build_config = config.get_build_config()
+        base_icon = "app_icon_dark.ico" if self.dark_mode else "app_icon.ico"
+        icon_path = os.path.join("resources", "icons", base_icon)
+        
+        # List of possible icon paths to try
+        icon_paths = [
+            icon_path,
+            os.path.abspath(icon_path),
+            os.path.abspath(os.path.join("resources", "icons", base_icon)),
+        ]
+        
+        # If running from a PyInstaller bundle
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(sys.executable)
+            icon_paths.extend([
+                os.path.join(base_path, icon_path),
+                os.path.join(base_path, "resources", "icons", base_icon),
+            ])
+        
+        # Try each path until we find a valid icon file
+        icon_found = False
+        for path in icon_paths:
+            if os.path.exists(path):
+                try:
+                    icon = QIcon(path)
+                    self.setWindowIcon(icon)
+                    self.dark_mode_button.setIcon(icon)
+                    self.dark_mode_button.setIconSize(self.dark_mode_button.size())
+                    print(f"Icons set from: {path}")
+                    icon_found = True
+                    break
+                except Exception as e:
+                    print(f"Failed to set icons from {path}: {e}")
+        
+        if not icon_found:
+            print("Warning: Could not set icons, no valid icon file found")
     
     def load_keys(self):
         """Load stored keys into the list widget."""
